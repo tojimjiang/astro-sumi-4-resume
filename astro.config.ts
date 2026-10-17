@@ -3,8 +3,11 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { SITE } from "./src/config";
 
+const base = process.env.BASE_PATH || "/";
+
 export default defineConfig({
   site: SITE.url,
+  base,
   compressHTML: true,
   vite: {
     build: {
