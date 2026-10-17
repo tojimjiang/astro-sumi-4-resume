@@ -4,13 +4,17 @@
   "version": "1.0.0",
   "description": "A resume-first Astro personal site with printable resume output and an optional blog.",
   "license": "MIT",
-  "engines": { "node": ">=22.12.0" },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "astro": "astro"
+    "astro": "astro",
+    "build:pdf": "node scripts/generate-resume-pdf.mjs",
+    "check:starter": "node scripts/check-starter.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
