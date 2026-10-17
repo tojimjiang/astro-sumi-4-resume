@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 
-const root = path.resolve("dist");
+const root = path.resolve(process.env.BUILD_DIR || "dist");
 const forbidden = [
   "jimjiang.com",
   "Jim Jiang",
