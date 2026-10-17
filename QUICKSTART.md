@@ -22,7 +22,7 @@ Open http://localhost:4321.
 - **Site identity and metadata:** edit `src/config.ts` (name, site URL, headline, description, and social links).
 - **Resume content:** edit `src/data/resume.json`. Replace every fictional example with your own information.
 - **Email reveal (optional):** configure `EMAIL_ADDRESS` as an environment variable locally or a GitHub Actions secret when deploying. Do not commit your real address in source files.
-- **Blog (optional):** enable `BLOG.enabled` and add a Notebook link in `NAV` in `src/config.ts`, then add posts under `src/content/blog/`.
+- **Blog (optional):** enable `BLOG.enabled` and add a Blog link in `NAV` in `src/config.ts`, then add posts under `src/content/blog/`. When enabled, the secondary **Read blog** homepage CTA appears by default; set `BLOG.showHomeCta` to `false` to hide it. The primary CTA remains **View resume**.
 
 Check and build before publishing:
 
