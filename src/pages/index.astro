@@ -13,8 +13,8 @@ import EmailUnlock from "../components/EmailUnlock.astro";
       <p class="hero__lede">{SITE.tagline}</p>
       <p class="hero__description">{SITE.description}</p>
       <p class="hero__cta">
-        <a href="/resume/">View resume <span aria-hidden="true">↗</span></a>
-        {BLOG.enabled && <a class="hero__secondary" href="/blog/">Read notebook <span aria-hidden="true">↗</span></a>}
+        <a href={`${import.meta.env.BASE_URL}resume/`}>View resume <span aria-hidden="true">↗</span></a>
+        {BLOG.enabled && <a class="hero__secondary" href={`${import.meta.env.BASE_URL}blog/`}>Read notebook <span aria-hidden="true">↗</span></a>}
       </p>
       <EmailUnlock />
     </div>
