@@ -6,8 +6,8 @@ import ResumeDocument from "../../components/ResumeDocument.astro";
   <header class="resume-actions wrap">
     <h1>Resume<span aria-hidden="true">.</span></h1>
     <button type="button" data-print-resume>Print / Save PDF ↗</button>
-  <script>document.querySelector("[data-print-resume]")?.addEventListener("click", () => window.print());</script>
   </header>
+  <script>document.querySelector("[data-print-resume]")?.addEventListener("click", () => window.print());</script>
   <div class="wrap"><ResumeDocument /></div>
 </BaseLayout>
 <style>
