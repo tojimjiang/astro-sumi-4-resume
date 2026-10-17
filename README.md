@@ -45,7 +45,7 @@ In the **private source repository**, open **Settings → Secrets and variables 
 
 Never put the real address in src/config.ts, resume.json, a committed .env file, or the public distribution repository. For local development, put EMAIL_ADDRESS=you@example.com in an untracked .env file.
 
-The homepage starts with a blurred fake placeholder. Clicking **Unlock email** reveals the address; a separate **Compose email** action opens mailto:. The workflow also builds a fixture version using ci-test@example.invalid so the email path is tested without needing the real address.
+The homepage starts with a blurred fake placeholder. Clicking **Unlock email** reveals the address; a separate **Compose email** action opens mailto:. The address is split into independently obfuscated segments in the generated HTML, adding friction for simple scrapers without pretending to provide security. The workflow also builds a fixture version using ci-test@example.invalid so the email path is tested without needing the real address.
 
 ### Configure the public distribution repository
 
