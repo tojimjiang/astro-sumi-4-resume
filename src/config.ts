@@ -14,6 +14,8 @@ export const SITE = {
 
 export const AUTHOR = {
   name: "Your Name",
+  /** Text for the automatically generated cursive favicon. Keep it short (1–3 characters). */
+  favicon: "YN",
   url: "",
   bio: "A short professional bio.",
 } as const;

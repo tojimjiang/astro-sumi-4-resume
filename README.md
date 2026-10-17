@@ -10,6 +10,10 @@ The upstream MIT license and copyright notice are retained. This derivative adds
 
 The example resume content is fictional; replace it before publishing. Site identity and metadata live in `src/config.ts`, while resume content lives in `src/data/resume.json`. The workflow checks, builds, generates `dist/resume.pdf`, and publishes the site. See the [Quickstart](QUICKSTART.md) for the setup and deployment walkthrough.
 
+### Cursive favicon
+
+The production build generates `dist/favicon.svg` from `AUTHOR.favicon` in `src/config.ts`, next to the author's name. Change `"YN"` to your initials or another short mark; one to three characters work best. The build uses the Dancing Script cursive font and converts glyphs into SVG paths, so the favicon does not depend on fonts installed in the browser. The font is fetched during generation. The generated file replaces the starter favicon in the build output, while the source asset remains untouched.
+
 ## Optional blog
 
 The blog is optional and disabled by default. To enable it, set `BLOG.enabled` to `true` in `src/config.ts` and add a Blog link to `NAV`. The homepage's secondary **Read blog** CTA is enabled by default when the blog is enabled; set `BLOG.showHomeCta` to `false` to hide it. Put Markdown/MDX posts in `src/content/blog/`. Blog routes, tags, RSS, and social-image generation are retained from Sumi.
