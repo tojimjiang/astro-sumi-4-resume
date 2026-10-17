@@ -10,7 +10,8 @@ interface Props {
 const { overlay = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const linkTo = (href: string) => `${base}${href.startsWith("/") ? href.slice(1) : href}`;
-const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const pathname = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
+const path = pathname.replace(/\/$/, "") || "/";
 
 const isCurrent = (href: string) =>
   path === href || (href !== "/" && path.startsWith(`${href}/`));
@@ -33,7 +34,7 @@ const isCurrent = (href: string) =>
           NAV.map((item) => (
             <li>
               <a
-                href={`${base}${item.href.replace(/^\\//, "")}`}
+                href={linkTo(item.href)}
                 aria-current={isCurrent(item.href) ? "page" : undefined}
               >
                 {item.label}
