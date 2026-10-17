@@ -8,6 +8,7 @@ const base = process.env.BASE_PATH || "/";
 export default defineConfig({
   site: SITE.url,
   base,
+  outDir: process.env.OUT_DIR || "./dist",
   compressHTML: true,
   vite: {
     build: {
