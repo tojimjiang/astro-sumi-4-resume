@@ -9,6 +9,7 @@ interface Props {
 
 const { overlay = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const linkTo = (href: string) => `${base}${href.startsWith("/") ? href.slice(1) : href}`;
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 const isCurrent = (href: string) =>
