@@ -12,7 +12,7 @@ The example resume content is fictional; replace it before publishing. Site iden
 
 ### Cursive favicon
 
-The build automatically generates `dist/favicon.svg` using the short text in `AUTHOR.favicon` in `src/config.ts`, next to the author's name. Change `"YN"` to your initials (or another short mark); one to three characters work best. The SVG uses a cursive font stack and follows the browser's light/dark color preference. No external font request or manual SVG editing is needed. The generated file replaces the starter favicon in the build output, while the source asset remains untouched.
+The production build generates `dist/favicon.svg` from `AUTHOR.favicon` in `src/config.ts`, next to the author's name. Change `"YN"` to your initials or another short mark; one to three characters work best. The build uses the Dancing Script cursive font and converts glyphs into SVG paths, so the favicon does not depend on fonts installed in the browser. The font is fetched during generation. The generated file replaces the starter favicon in the build output, while the source asset remains untouched.
 
 ## Optional blog
 
