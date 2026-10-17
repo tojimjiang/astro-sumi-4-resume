@@ -8,6 +8,7 @@ interface Props {
 }
 
 const { overlay = false } = Astro.props;
+const base = import.meta.env.BASE_URL;
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 const isCurrent = (href: string) =>
@@ -15,7 +16,7 @@ const isCurrent = (href: string) =>
 ---
 
 <header class="site-header" data-overlay={overlay ? "" : undefined}>
-  <a class="brand" href="/">
+  <a class="brand" href={base}>
     <span class="brand__mark">{SITE.title}</span>
     {
       SITE.titleMark && (
@@ -31,7 +32,7 @@ const isCurrent = (href: string) =>
           NAV.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={`${base}${item.href.replace(/^\\//, "")}`}
                 aria-current={isCurrent(item.href) ? "page" : undefined}
               >
                 {item.label}
