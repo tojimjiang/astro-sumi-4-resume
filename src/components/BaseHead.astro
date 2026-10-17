@@ -18,8 +18,11 @@ interface Props {
 
 const { title, description, ogImage, article } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const image = new URL(ogImage ?? SITE.defaultOgImage, Astro.site);
+const base = import.meta.env.BASE_URL;
+const withBase = (href: string) => `${base}${href.replace(/^\\/+/, "")}`;
+const canonical = new URL(withBase(Astro.url.pathname), Astro.site);
+const imageHref = ogImage && /^https?:\\/\\//.test(ogImage) ? ogImage : withBase(ogImage ?? SITE.defaultOgImage);
+const image = new URL(imageHref, Astro.site);
 
 const person = {
   "@type": "Person",
@@ -73,12 +76,12 @@ const structuredData = article
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
 
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href={withBase("/favicon.svg")} type="image/svg+xml" />
 <link
   rel="alternate"
   type="application/rss+xml"
   title={`${SITE.title} — ${SITE.tagline}`}
-  href={new URL("rss.xml", Astro.site)}
+  href={new URL(withBase("rss.xml"), Astro.site)}
 />
 <meta
   name="theme-color"
@@ -93,14 +96,14 @@ const structuredData = article
 
 <link
   rel="preload"
-  href="/fonts/source-serif-4-latin.woff2"
+  href={withBase("/fonts/source-serif-4-latin.woff2")}
   as="font"
   type="font/woff2"
   crossorigin
 />
 <link
   rel="preload"
-  href="/fonts/jetbrains-mono-latin.woff2"
+  href={withBase("/fonts/jetbrains-mono-latin.woff2")}
   as="font"
   type="font/woff2"
   crossorigin
