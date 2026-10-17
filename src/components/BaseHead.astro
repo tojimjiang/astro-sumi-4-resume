@@ -19,9 +19,9 @@ interface Props {
 const { title, description, ogImage, article } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
-const withBase = (href: string) => `${base}${href.replace(/^\\/+/, "")}`;
+const withBase = (href: string) => `${base}${href.startsWith("/") ? href.slice(1) : href}`;
 const canonical = new URL(withBase(Astro.url.pathname), Astro.site);
-const imageHref = ogImage && /^https?:\\/\\//.test(ogImage) ? ogImage : withBase(ogImage ?? SITE.defaultOgImage);
+const imageHref = ogImage?.startsWith("http://") || ogImage?.startsWith("https://") ? ogImage : withBase(ogImage ?? SITE.defaultOgImage);
 const image = new URL(imageHref, Astro.site);
 
 const person = {
