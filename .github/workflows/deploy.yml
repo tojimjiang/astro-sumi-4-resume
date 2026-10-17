@@ -34,6 +34,12 @@ jobs:
         run: npm ci
       - name: Check types
         run: npm run check
+      - name: Test email unlock with a fixture address
+        env:
+          EMAIL_ADDRESS: ci-test@example.invalid
+          BASE_PATH: ${{ vars.ASTRO_BASE_PATH }}
+          OUT_DIR: dist-email-test
+        run: npm run build && BUILD_DIR=dist-email-test EMAIL_ADDRESS=ci-test@example.invalid npm run check:starter
       - name: Build site
         env:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
