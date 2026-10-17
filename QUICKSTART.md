@@ -20,6 +20,7 @@ Open http://localhost:4321.
 ## 2. Add your details
 
 - **Site identity and metadata:** edit `src/config.ts` (name, site URL, headline, description, and social links).
+- **Cursive favicon:** in the same file, change `AUTHOR.favicon` (next to `AUTHOR.name`) from `"YN"` to your initials or another short mark. The production build automatically generates `dist/favicon.svg`; one to three characters work best. It uses a cursive font stack and adapts to light/dark mode.
 - **Resume content:** edit `src/data/resume.json`. Replace every fictional example with your own information.
 - **Email reveal (optional):** configure `EMAIL_ADDRESS` as an environment variable locally or a GitHub Actions secret when deploying. Do not commit your real address in source files.
 - **Blog (optional):** enable `BLOG.enabled` and add a Blog link in `NAV` in `src/config.ts`, then add posts under `src/content/blog/`. When enabled, the secondary **Read blog** homepage CTA appears by default; set `BLOG.showHomeCta` to `false` to hide it. The primary CTA remains **View resume**.
