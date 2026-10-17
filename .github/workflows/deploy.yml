@@ -69,8 +69,10 @@ jobs:
           persist-credentials: true
       - name: Publish built site to public repository
         if: ${{ vars.PUBLIC_REPO != '' && github.event_name != 'pull_request' }}
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         run: |
-          if [ -z "${{ secrets.PUBLISH_TOKEN }}" ]; then
+          if [ -z "$PUBLISH_TOKEN" ]; then
             echo "::error::PUBLIC_REPO is set but PUBLISH_TOKEN is missing."
             exit 1
           fi
