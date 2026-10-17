@@ -1,187 +1,64 @@
-# Sumi 墨
+# astro-sumi-4-resume
 
-An Astro 7 blog theme built around ink, washi paper and generous negative space.
+A resume-first personal site based on [Sumi](https://github.com/kpab/astro-sumi), with a print-friendly resume, a simple homepage, and an optional blog.
 
-Dual light and dark palettes from a single set of tokens, no external requests, no client JavaScript on article pages — and a real WebGL fluid simulation behind the front page that you can stir with the cursor.
-
-[Japanese README →](./README.ja.md)
-
-![The ink hero in dark mode](./docs/screenshot-dark.png)
-![The same page on washi paper](./docs/screenshot-light.png)
-
-## Features
-
-- **Light and dark, declared once.** Colours are written with `light-dark()` and driven by `color-scheme`, so the toggle sets one attribute and the whole page follows. With JavaScript off, the OS preference still wins.
-- **No external requests.** Latin faces are self-hosted and subset; Japanese falls through to the system mincho stack rather than shipping a multi-megabyte CJK font.
-- **Nothing to hydrate.** Article pages ship zero external JavaScript. The theme toggle is a few hundred inlined bytes; the ink is 3.5 KB gzipped and loads on the front page only.
-- **A fluid simulation, responsibly.** Navier–Stokes on the GPU, capped at 1.5× DPR, paused off-screen, and skipped entirely for `prefers-reduced-motion` or browsers without WebGL2 — a static gradient stands in.
-- **Content collections with a schema.** A missing date or malformed tag fails the build, not the page. Markdown and MDX both work.
-- **SEO out of the box.** Canonical URLs, Open Graph, Twitter cards, JSON-LD (`WebSite` / `BlogPosting`), sitemap, RSS, `robots.txt` and `llms.txt`.
-- **Per-post social images.** Generated at build time with satori — ink ground, vermilion rule, monospace type.
-- **Dual-theme syntax highlighting.** Shiki emits both palettes; the toggle switches them with everything else.
-- **Accessible by construction.** Semantic landmarks, a skip link, visible focus rings, and contrast checked in both themes.
+The upstream MIT license and copyright notice are retained. This derivative adds a resume data model, print layout, optional click-to-reveal email, and a GitHub Pages deployment workflow.
 
 ## Quick start
 
-```bash
-git clone https://github.com/kpab/astro-sumi.git
-cd astro-sumi
-npm install
+Requires Node.js **22.12+** (Node 22 or 24 recommended).
+
+```sh
+npm ci
 npm run dev
 ```
 
-Requires **Node.js 22.12 or newer**. Astro does not support odd-numbered Node releases, so use 22 or 24.
+Open http://localhost:4321.
 
-| Command           | Does                                     |
-| ----------------- | ---------------------------------------- |
-| `npm run dev`     | Start the dev server on `localhost:4321` |
-| `npm run build`   | Build to `./dist`                        |
-| `npm run preview` | Serve the built site locally             |
-| `npm run check`   | Type check with `astro check`            |
+## Make it yours
 
-## Configuration
+1. Edit `src/config.ts`: site URL, name, headline, description, and metadata.
+2. Edit `src/data/resume.json`: contact links, summary, experience, education, and skills. Replace every example entry.
+3. Run `npm run check && npm run build`.
+4. Visit `/resume/` and use **Print / Save PDF**. Browser print output is the default PDF generator; no personal PDF or external service is required.
 
-Everything you need to change lives in [`src/config.ts`](./src/config.ts).
+The example resume content is intentionally fictional. Replace it before publishing.
 
-```ts
-export const SITE = {
-  url: "https://your-domain.com", // no trailing slash
-  title: "Sumi",
-  titleMark: "墨", // set to "" to drop the Japanese accents
-  tagline: "An Astro theme in ink and paper",
-  description: "…",
-  lang: "en",
-  locale: "en_US",
-  defaultOgImage: "/og-default.png",
-};
+## Optional blog
 
-export const AUTHOR = { name: "…", url: "…", bio: "…" };
-export const NAV = [{ label: "Blog", href: "/blog" } /* … */];
-export const SOCIAL = [{ label: "GitHub", href: "…" }];
+The blog is off the main navigation by default. To enable it, set `BLOG.enabled` to `true` in `src/config.ts` and add a Notebook link to `NAV`. Put Markdown/MDX posts in `src/content/blog/`. Blog routes, tags, RSS, and social-image generation are retained from Sumi.
 
-export const BLOG = {
-  postsPerPage: 4, // 8–12 suits a real archive
-  postsOnHome: 4,
-  wordsPerMinute: 220,
-  showReadingTime: true,
-  showTableOfContents: true,
-  tocMinHeadings: 3,
-};
+## Optional email unlock
 
-export const INK = {
-  hero: true, // full-bleed simulation behind the hero
-  divider: true, // narrow ink band between sections
-  strength: 1, // 0.3 – 2.5
-  autoFlow: true, // drift on its own, not just under the cursor
-};
+No contact page is included. The homepage has a small email unlock component that only renders when `EMAIL_ADDRESS` is set at build time.
 
-export const OG = { enabled: true, width: 1200, height: 630 };
-```
+- **Local:** put `EMAIL_ADDRESS=you@example.com` in an untracked `.env` file. Never commit it.
+- **GitHub Actions:** open **Repository → Settings → Secrets and variables → Actions → New repository secret**, name it `EMAIL_ADDRESS`, and set the value. The included workflow passes this secret to the build.
 
-Setting both `INK` flags to `false` leaves the theme with no external JavaScript at all — the hero keeps a static ink gradient.
+The UI starts with a blurred fake placeholder; a deliberate click reveals the address, and a separate click opens `mailto:`. The address is XOR-obfuscated into the generated page instead of appearing as plaintext in source files. This is **scrape friction, not security**: the public decoder and payload can be recovered by a determined scraper. A GitHub secret protects the source repository and build configuration, not the deployed website after the address is rendered.
 
-### What the ink costs
+If you do not want the address recoverable from the public site, do not publish it; use a profile link or a server-backed contact provider instead.
 
-Measured with Lighthouse under its default mobile profile (4× CPU throttling, slow 4G) against `npm run preview`, which serves uncompressed:
+## GitHub Pages
 
-| Page                     | Performance | Accessibility | Best practices | SEO |
-| ------------------------ | ----------: | ------------: | -------------: | --: |
-| Article                  |       85–96 |           100 |            100 | 100 |
-| Home, `INK.hero: true`   |       74–81 |           100 |            100 | 100 |
-| Home, `INK.hero: false`  |          93 |           100 |            100 | 100 |
+1. Push this repository to GitHub.
+2. In **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**.
+3. In `src/config.ts`, set `SITE.url` to your final origin. For a user site, this is typically `https://USERNAME.github.io`; for a custom domain, use that domain.
+4. For a project site (URL includes `/REPOSITORY`), set repository variable `ASTRO_BASE_PATH` to `/REPOSITORY`. Leave it empty for a user site or custom domain.
+5. Push to `main`. The workflow runs type checks and a production build, then deploys `dist/` to Pages. No personal access token or second publishing repository is required.
 
-LCP on the home page is 1.9 s and CLS is 0 either way — the simulation is deferred until the browser is idle, so it never blocks first paint. What it does cost is blocking time while the shaders compile, which is why the front page scores lower than an article. A real host with compression, and a device that is not being throttled fourfold, both do better than these numbers.
+The workflow uses the built-in `GITHUB_TOKEN` with minimum Pages deployment permissions. Configure the custom domain in GitHub Pages and DNS if you use one.
 
-If you want the front page in the high nineties, turn `INK.hero` off. The article range depends on how much highlighted code a post contains.
+## Commands
 
-## Writing posts
-
-Posts are Markdown or MDX files in `src/content/blog/`. The filename becomes the URL.
-
-```markdown
----
-title: "The Grammar of Negative Space"
-description: "Shown in the post list, the meta description and the OG image."
-pubDate: 2026-07-28
-updatedDate: 2026-08-01 # optional
-tags: ["design", "craft"]
-draft: false # drafts are visible in dev, dropped from builds
-heroImage: ./cover.jpg # optional, optimised through astro:assets
-heroImageAlt: "…"
----
-
-Your text here.
-```
-
-The schema lives in [`src/content.config.ts`](./src/content.config.ts). Files whose names begin with `_` are ignored entirely.
-
-Note that Astro 7 replaced remark/rehype with [Sätteri](https://satteri.bruits.org/), so remark plugins no longer apply. This theme deliberately depends on none: the table of contents is built from the headings Astro already returns, and reading time is computed from the post body.
-
-## Structure
-
-```
-src/
-├── config.ts              ← the only file you need to edit
-├── content.config.ts      collection schema
-├── content/blog/          your posts
-├── assets/fonts/          TrueType used to render OG images (not served)
-├── components/            header, footer, cards, ink, SEO head
-├── layouts/               BaseLayout, PostLayout
-├── pages/
-│   ├── index.astro        hero + latest posts
-│   ├── blog/              list, pagination, post pages
-│   ├── tags/              tag index and archives
-│   ├── og/                per-post social images
-│   └── rss.xml.ts  llms.txt.ts  robots.txt.ts
-├── scripts/fluid-ink.ts   the WebGL ink custom element
-├── styles/                tokens, global, fonts, prose
-└── utils/                 posts, dates, reading time, OG rendering
-public/fonts/              self-hosted woff2 + OFL licence
-```
-
-## Customising
-
-**Colours.** All of them are in [`src/styles/tokens.css`](./src/styles/tokens.css), declared once with `light-dark(light, dark)`. Change the palette block and both themes follow. The ink simulation reads `--ink-canvas-bg`, `--ink-pigment` and `--ink-accent` from the same file, and decides whether to lay ink onto paper or glow it on black from the background's luminance — so a custom palette needs no extra work.
-
-**Type.** `--font-serif` and `--font-mono` in the same file. To swap the Latin faces, drop new `.woff2` files into `public/fonts/` and update [`src/styles/fonts.css`](./src/styles/fonts.css). To add a Japanese webfont rather than using the system mincho stack, add an `@font-face` there.
-
-**Ink.** Tuned in [`src/scripts/fluid-ink.ts`](./src/scripts/fluid-ink.ts): the solve resolution, the 22-iteration pressure solve, dissipation, and the ambient splat cadence all sit near the top of the frame loop.
-
-**Syntax colours.** `markdown.shikiConfig` in [`astro.config.ts`](./astro.config.ts). Keep `defaultColor: false` so both palettes stay available to the toggle.
-
-## Deploying
-
-The theme builds to static files, so any host works.
-
-**Cloudflare Pages** — connect the repository and set:
-
-```
-Build command:      npm run build
-Build output:       dist
-Node version:       24
-```
-
-**Netlify** — the same values, or commit a `netlify.toml`:
-
-```toml
-[build]
-  command = "npm run build"
-  publish = "dist"
-
-[build.environment]
-  NODE_VERSION = "24"
-```
-
-**Vercel** — Astro is detected automatically. Confirm the output directory is `dist` and the Node version is 24.
-
-Whichever you pick, set `SITE.url` in `src/config.ts` to the deployed origin first — canonical URLs, the sitemap, the feed and the OG image URLs are all built from it.
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Local development |
+| `npm run check` | Astro/TypeScript checks |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build |
 
 ## Credits
 
-- [Source Serif 4](https://github.com/adobe-fonts/source-serif) by Adobe and [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) by JetBrains, both under the SIL Open Font License 1.1 (see [`public/fonts/LICENSE.txt`](./public/fonts/LICENSE.txt))
-- Syntax colours from [Vitesse](https://github.com/antfu/vscode-theme-vitesse) via Shiki
-- Social images rendered with [satori](https://github.com/vercel/satori) and [resvg](https://github.com/yisibl/resvg-js)
-
-## Licence
-
-MIT © [kpab](https://github.com/kpab)
+- Original theme: [kpab/astro-sumi](https://github.com/kpab/astro-sumi), MIT.
+- Fonts, syntax themes, and rendering libraries retain their respective upstream licenses; see their bundled license files and package metadata.
