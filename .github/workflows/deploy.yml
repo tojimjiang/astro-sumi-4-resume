@@ -32,8 +32,6 @@ jobs:
         uses: browser-actions/setup-chrome@v1
       - name: Install dependencies
         run: npm ci
-      - name: Generate cursive favicon
-        run: node scripts/generate-favicon.mjs
       - name: Check types
         run: npm run check
       - name: Test email unlock with a fixture address
