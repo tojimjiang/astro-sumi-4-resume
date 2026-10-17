@@ -34,19 +34,21 @@ if (!resume.includes("Print / Save PDF")) problems.push("Resume page is missing 
 if (!resume.includes("Download PDF")) problems.push("Resume page is missing its PDF download link.");
 
 const email = process.env.EMAIL_ADDRESS || "";
-const payloadMatch = homepage.match(/data-email-payload="([0-9a-f]+)"/i);
+const payloadMatch = homepage.match(/data-email-payload="([0-9a-f.]+)"/i);
 if (email) {
   if (!payloadMatch) problems.push("EMAIL_ADDRESS is set but the homepage has no email payload.");
   else {
     const payload = payloadMatch[1];
-    const decoded = (payload.match(/.{2}/g) || []).map((pair, index) =>
+    const decodeChunk = (chunk) => (chunk.match(/.{2}/g) || []).map((pair, index) =>
       String.fromCharCode(parseInt(pair, 16) ^ ((index * 17 + 41) % 127)),
     ).join("");
-    if (decoded !== email) problems.push("Email payload did not round-trip to EMAIL_ADDRESS.");
+    const decoded = payload.split(".").map(decodeChunk).join("");
+    if (decoded !== email) problems.push("Split email payload did not round-trip to EMAIL_ADDRESS.");
     if (homepage.includes(email)) problems.push("Plaintext email address leaked into generated homepage HTML.");
     if (!homepage.includes("Unlock email") || !homepage.includes("Compose email")) {
       problems.push("Email unlock markup is missing one of its two deliberate actions.");
     }
+    if (!payload.includes(".")) problems.push("Email payload is not split into independently encoded chunks.");
   }
 } else if (payloadMatch || homepage.includes("Unlock email")) {
   problems.push("Email unlock should not render when EMAIL_ADDRESS is unset.");
@@ -55,4 +57,4 @@ if (problems.length) {
   console.error("Starter output validation failed:\n- " + problems.join("\n- "));
   process.exit(1);
 }
-console.log(`Starter output validated: ${files.length} files scanned; email ${email ? "payload round-trip passed" : "not configured"}.`);
+console.log(`Starter output validated: ${files.length} files scanned; email ${email ? "split-payload round-trip passed" : "not configured"}.`);
