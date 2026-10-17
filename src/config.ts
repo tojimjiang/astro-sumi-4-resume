@@ -18,10 +18,7 @@ export const AUTHOR = {
   bio: "A short professional bio.",
 } as const;
 
-export const NAV = [
-  { label: "Resume", href: "/resume/" },
-  { label: "Notebook", href: "/blog/", optional: true },
-] as const;
+export const NAV = [{ label: "Resume", href: "/resume/" }] as const;
 
 export const SOCIAL = [
   // { label: "GitHub", href: "https://github.com/your-handle" },
