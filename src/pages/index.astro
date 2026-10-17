@@ -2,6 +2,7 @@
 import FluidInk from "../components/FluidInk.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { INK, SITE, BLOG } from "../config";
+import EmailUnlock from "../components/EmailUnlock.astro";
 ---
 
 <BaseLayout overlayHeader>
@@ -15,6 +16,7 @@ import { INK, SITE, BLOG } from "../config";
         <a href="/resume/">View resume <span aria-hidden="true">↗</span></a>
         {BLOG.enabled && <a class="hero__secondary" href="/blog/">Read notebook <span aria-hidden="true">↗</span></a>}
       </p>
+      <EmailUnlock />
     </div>
   </FluidInk>
   {INK.divider && <FluidInk variant="divider" strength={INK.strength * 0.7}><p class="divider__label label">Selected work</p></FluidInk>}
