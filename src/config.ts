@@ -20,10 +20,10 @@ export const AUTHOR = {
 
 export const NAV = [{ label: "Resume", href: "/resume/" }] as const;
 
-export const SOCIAL = [
+export const SOCIAL: { label: string; href: string }[] = [
   // { label: "GitHub", href: "https://github.com/your-handle" },
   // { label: "LinkedIn", href: "https://www.linkedin.com/in/your-handle" },
-] as const;
+];
 
 export const BLOG = {
   enabled: false,
