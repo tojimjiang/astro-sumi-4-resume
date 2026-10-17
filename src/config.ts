@@ -27,6 +27,7 @@ export const SOCIAL: { label: string; href: string }[] = [
 
 export const BLOG = {
   enabled: false,
+  showHomeCta: true,
   postsPerPage: 8,
   postsOnHome: 0,
   wordsPerMinute: 220,
