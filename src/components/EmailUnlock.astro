@@ -1,0 +1,54 @@
+---
+import { emailPayload } from "../utils/email-unlock";
+
+const encodedEmail = emailPayload(process.env.EMAIL_ADDRESS ?? "");
+const enabled = encodedEmail.length > 0;
+---
+{enabled && <section class="email-unlock" data-email-payload={encodedEmail} aria-label="Email contact">
+  <span class="email-unlock__preview" aria-hidden="true">example@email.com</span>
+  <button class="email-unlock__reveal" type="button">Unlock email</button>
+  <span class="email-unlock__address" hidden></span>
+  <button class="email-unlock__compose" type="button" hidden>Compose email ↗</button>
+  <span class="email-unlock__note">Email is revealed only after you ask.</span>
+</section>}
+<script>
+  // Each address segment is encoded separately. This is deliberate scrape
+  // friction, not encryption: the public decoder can still recover the address.
+  const decodeChunk = (hex: string) => {
+    const bytes = hex.match(/.{2}/g) ?? [];
+    return bytes.map((pair, index) =>
+      String.fromCharCode(parseInt(pair, 16) ^ ((index * 17 + 41) % 127)),
+    ).join("");
+  };
+  const decode = (payload: string) => payload.split(".").map(decodeChunk).join("");
+
+  document.querySelectorAll<HTMLElement>(".email-unlock").forEach((root) => {
+    const payload = root.dataset.emailPayload ?? "";
+    const reveal = root.querySelector<HTMLButtonElement>(".email-unlock__reveal");
+    const preview = root.querySelector<HTMLElement>(".email-unlock__preview");
+    const address = root.querySelector<HTMLElement>(".email-unlock__address");
+    const compose = root.querySelector<HTMLButtonElement>(".email-unlock__compose");
+    if (!payload || !reveal || !preview || !address || !compose) return;
+
+    let decoded = "";
+    reveal.addEventListener("click", () => {
+      decoded = decode(payload);
+      address.textContent = decoded;
+      address.hidden = false;
+      preview.hidden = true;
+      reveal.hidden = true;
+      compose.hidden = false;
+    });
+    compose.addEventListener("click", () => {
+      if (decoded) window.location.href = `mailto:${decoded}`;
+    });
+  });
+</script>
+<style>
+  .email-unlock { display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-3); font-family:var(--font-mono); }
+  .email-unlock__preview { filter:blur(4px); user-select:none; pointer-events:none; }
+  .email-unlock button { border:1px solid var(--color-rule); padding:.4rem .65rem; background:transparent; color:var(--color-fg); font:inherit; cursor:pointer; }
+  .email-unlock button:hover { border-color:var(--color-accent); color:var(--color-accent); }
+  .email-unlock__address { overflow-wrap:anywhere; }
+  .email-unlock__note { flex-basis:100%; color:var(--color-fg-faint); font-size:var(--text-xs); }
+</style>

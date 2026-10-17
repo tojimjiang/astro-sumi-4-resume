@@ -1,0 +1,103 @@
+name: Build and publish site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-publish
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out private source
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Set up Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Install dependencies
+        run: npm ci
+      - name: Check types
+        run: npm run check
+      - name: Test email unlock with a fixture address
+        env:
+          EMAIL_ADDRESS: ci-test@example.invalid
+          BASE_PATH: ${{ vars.ASTRO_BASE_PATH }}
+          OUT_DIR: dist-email-test
+        run: npm run build && BUILD_DIR=dist-email-test EMAIL_ADDRESS=ci-test@example.invalid npm run check:starter
+      - name: Build site
+        env:
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          BASE_PATH: ${{ vars.ASTRO_BASE_PATH }}
+        run: npm run build
+      - name: Validate starter output
+        env:
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+        run: npm run check:starter
+      - name: Generate downloadable resume PDF
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+          BASE_PATH: ${{ vars.ASTRO_BASE_PATH }}
+        run: npm run build:pdf
+      - name: Upload Pages artifact
+        if: ${{ vars.PUBLIC_REPO == '' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Check out public distribution repository
+        if: ${{ vars.PUBLIC_REPO != '' && github.event_name != 'pull_request' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.PUBLIC_REPO }}
+          token: ${{ secrets.PUBLISH_TOKEN }}
+          path: public-dist
+          persist-credentials: true
+      - name: Publish built site to public repository
+        if: ${{ vars.PUBLIC_REPO != '' && github.event_name != 'pull_request' }}
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: |
+          if [ -z "$PUBLISH_TOKEN" ]; then
+            echo "::error::PUBLIC_REPO is set but PUBLISH_TOKEN is missing."
+            exit 1
+          fi
+          rsync -av --delete --exclude='.git/' dist/ public-dist/
+          git -C public-dist config user.name "github-actions[bot]"
+          git -C public-dist config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C public-dist add --all
+          if git -C public-dist diff --cached --quiet; then
+            echo "Public distribution repository is already up to date."
+          else
+            git -C public-dist commit -m "Publish site from ${GITHUB_SHA}"
+            git -C public-dist push origin HEAD
+          fi
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ github.event_name != 'pull_request' && vars.PUBLIC_REPO == '' }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

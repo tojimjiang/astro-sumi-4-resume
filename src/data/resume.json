@@ -1,0 +1,35 @@
+{
+  "person": {
+    "name": "Your Name",
+    "headline": "Your role or professional headline",
+    "location": "City, Country",
+    "email": "",
+    "website": "",
+    "linkedin": "",
+    "github": "",
+    "summary": "A short professional summary. Keep it specific, useful, and easy to scan."
+  },
+  "experience": [
+    {
+      "company": "Example Company",
+      "role": "Your Role",
+      "location": "Remote",
+      "start": "2022",
+      "end": "Present",
+      "bullets": [
+        "Describe a meaningful result, ideally with scope or measurable impact.",
+        "Explain a system, project, or responsibility you owned."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Example University",
+      "qualification": "Degree or qualification",
+      "details": "Optional details",
+      "start": "2018",
+      "end": "2022"
+    }
+  ],
+  "skills": ["Skill one", "Skill two", "Skill three"]
+}

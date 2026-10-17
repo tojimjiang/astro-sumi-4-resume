@@ -1,34 +1,9 @@
 {
-  "name": "astro-sumi",
+  "name": "astro-sumi-4-resume",
   "type": "module",
   "version": "1.0.0",
-  "description": "A minimal Astro 7 blog theme in ink and washi paper, with dual light and dark palettes, zero client JavaScript on article pages, and a WebGL ink simulation on the front page.",
+  "description": "A resume-first Astro personal site with printable resume output and an optional blog.",
   "license": "MIT",
-  "author": "kpab (https://github.com/kpab)",
-  "homepage": "https://github.com/kpab/astro-sumi",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kpab/astro-sumi.git"
-  },
-  "bugs": {
-    "url": "https://github.com/kpab/astro-sumi/issues"
-  },
-  "keywords": [
-    "astro",
-    "astro-theme",
-    "astro-template",
-    "astro-blog",
-    "astro-component",
-    "withastro",
-    "blog",
-    "theme",
-    "minimal",
-    "dark-mode",
-    "mdx",
-    "typography",
-    "webgl",
-    "japanese"
-  ],
   "engines": {
     "node": ">=22.12.0"
   },
@@ -37,7 +12,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "astro": "astro"
+    "astro": "astro",
+    "build:pdf": "node scripts/generate-resume-pdf.mjs",
+    "check:starter": "node scripts/check-starter.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
