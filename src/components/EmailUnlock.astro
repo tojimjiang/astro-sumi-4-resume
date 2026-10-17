@@ -12,14 +12,15 @@ const enabled = encodedEmail.length > 0;
   <span class="email-unlock__note">Email is revealed only after you ask.</span>
 </section>}
 <script>
-  // The payload is intentionally obfuscated, not encrypted. This adds friction
-  // for bulk scrapers but cannot keep a public email secret from a determined one.
-  const decode = (hex: string) => {
+  // Each address segment is encoded separately. This is deliberate scrape
+  // friction, not encryption: the public decoder can still recover the address.
+  const decodeChunk = (hex: string) => {
     const bytes = hex.match(/.{2}/g) ?? [];
     return bytes.map((pair, index) =>
       String.fromCharCode(parseInt(pair, 16) ^ ((index * 17 + 41) % 127)),
     ).join("");
   };
+  const decode = (payload: string) => payload.split(".").map(decodeChunk).join("");
 
   document.querySelectorAll<HTMLElement>(".email-unlock").forEach((root) => {
     const payload = root.dataset.emailPayload ?? "";
